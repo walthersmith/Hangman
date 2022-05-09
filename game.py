@@ -85,15 +85,17 @@ def normalizeString(word:str):
 
 
 def start_game():
+    _START_GAME = 1
+    _EXIT_GAME  = 2
     
     while True:
         clean_screen()
         option = input(gui.gui_game()) 
         try: 
             assert option.isnumeric()
-            if int(option) == 2:
+            if int(option) == _EXIT_GAME:
                 break
-            elif int(option) == 1:
+            elif int(option) == _START_GAME:
                 game()
         except TypeError as e:
             print(e)
