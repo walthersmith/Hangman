@@ -3,7 +3,9 @@ import time
 import sys
 
 def gui_game():
-    
+    """ 
+    this is the Principal menu
+    """
     mess = f"""        
 
 
@@ -28,7 +30,9 @@ def gui_game():
 
 
 
-def win_screen(points:int,word:str):
+def win_screen(points:int,word:str) -> str:
+    
+    
     return f"""
     
             ██╗░░██╗░█████╗░███╗░░██╗░██████╗░███╗░░░███╗░█████╗░███╗░░██╗
