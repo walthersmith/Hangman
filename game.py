@@ -126,10 +126,10 @@ def start_game():
         clean_screen()
         option = input(gui.gui_game()) 
         try: 
-            assert option.isnumeric()
-            if int(option) == _EXIT_GAME:
-                break
-            elif int(option) == _START_GAME:
-                game()
-        except TypeError as e:
+            if option.isnumeric() :                 
+                if int(option) == _EXIT_GAME:
+                    break
+                elif int(option) == _START_GAME:
+                    game()
+        except Exception as e:
             print(e)

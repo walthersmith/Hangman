@@ -347,9 +347,9 @@ def gui_in_game(points:int,attemps:int,attemp:int, word_map:str,letters_used:lis
     ║                                                       ║
     ║{                        scene                        }║              
     ║═══════════════════════════════════════════════════════║
-    ║                       {word_map}                      ║
+    ║{word_map: ^55}║
     ║═══════════════════════════════════════════════════════║
-    ║  {           ''.join(letters_used )                }  ║
+    ║{''.join([x+' ' for x in letters_used]): ^55}║
     ╚═══════════════════════════════════════════════════════╝
     """ 
  
