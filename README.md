@@ -1,5 +1,7 @@
 # Hangman
 
+ ![image](menu.png)
+
 This Hangman Game is create  for  the last  challenge  in a python course  called  
 "Curso de Python Intermedio: Comprehensions, Lambdas y Manejo de Errores" in [PLATZI](https://platzi.com/cursos/python-intermedio/)
 
@@ -9,10 +11,11 @@ This Hangman Game is create  for  the last  challenge  in a python course  calle
 just clone the repository 
  
 ## Usage
-
-A few examples of useful commands and/or tasks.
-
+into the project directory, just run this command 
 ```
 $ python main.py
 ```
+![image](game.png)
+![image](win.png)
+![image](loose.png)
  
