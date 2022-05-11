@@ -1,4 +1,4 @@
-# Hangman
+# Hangman (Work in Progress)
 
  ![image](menu.png)
 
