@@ -1,6 +1,7 @@
-import game
 import time
 import sys
+import life
+from score import Score
 
 def gui_game():
     """ 
@@ -81,7 +82,7 @@ def loose_screen(points:int,word:str):
                                 PRESS ENTER TO CONTINUE                 
     """
     
-def gui_in_game(points:int,attemps:int,attemp:int, word_map:str,letters_used:list):
+def gui_in_game(score:Score,lifes:life,word_map:str,letters_used:list):
 
     scene_map =[
     """                                                       ║
@@ -335,14 +336,14 @@ def gui_in_game(points:int,attemps:int,attemp:int, word_map:str,letters_used:lis
     ║           . .          `\'        . .                  ║
     ║                                                       """
     ]
-    print(attemp)
-    scene  = scene_map[attemp]
-    attemps_left = (attemps - attemp)
+
+    scene  = scene_map[score.get_attemps()]
+    attemps_left  = (score.get_maximun_attemps() - score.get_attemps())    
     return  f"""
     ╔═══════════════════════════════════════════════════════╗
-    ║░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░║
+    ║{'LEVEL: '+str(score.get_level())+' ║ '+('  '+lifes.get_life_art())*lifes.get_lifes(): ^58}║
     ║═══════════════════════════════════════════════════════║
-    ║     ATTEMPS LEFT: {attemps_left:2d}      | POINTS: {points:3}               ║
+    ║    ATTEMPS LEFT: {attemps_left:2d}      ║ SCORE:{score.get_score_art()} {score.get_score():3}               ║
     ║═══════════════════════════════════════════════════════║
     ║                                                       ║
     ║{                        scene                        }║              
