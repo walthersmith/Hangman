@@ -99,10 +99,8 @@ def game2(words: list):
             if len(letters_left) == 0 and game_score.get_attemps() <= game_score.get_maximun_attemps():
                 clean_screen()
                 scene = scenes['win']
-                input(gui.gui_in_game(game_score, lives, ''.join(word_map), letters_used,level,scene))
-                print("game_score.get_level(): ",level.get_level())
-                level.increase_level()
-                print("game_score.get_level(): ",level.get_level())
+                input(gui.gui_in_game(game_score, lives, ''.join(word_map), letters_used,level,scene)) 
+                level.increase_level() 
                 continue_game = False
                 continue
 
