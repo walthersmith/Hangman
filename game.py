@@ -1,160 +1,139 @@
 import random
-import string
-import os
-import platform as pl
-
-from bleach import clean
+from time import sleep
 import gui
-import pyfiglet
 import re
+import platform as pl
+import os
 
 from life import *
 from score import *
+from level import *
 
 
-
-def get_words(file_name:str) ->list :
-    """Reads a file text to fill a list of words    
+def get_words(file_name: str) -> list:
+    """Reads a file text to fill a list with words
 
     Returns:
         [list]: return a list with all the words in the file
     """
     words = []
-    with open(file_name,'r', encoding="utf-8") as f:
+    with open(file_name, 'r', encoding="utf-8") as f:
         for line in f:
             words.append(line.rstrip('\n'))
     return words
 
-def get_ramdom_word(words:list) -> str:
-    """get a ramdom word from a list
+
+def get_random_word(words: list) -> str:
+    """get a random word from a list
 
     Args:
         words (list): a list of words 
 
     Returns:
-        [str]: return a ramdom item from the list 
+        [str]: return a random item from the list
     """
-    word = words[random.randint(0, len(words)-1)].upper()
+    word = words[random.randint(0, len(words) - 1)].upper()
     return word
+
 
 def clean_screen():
     """
-     this function clear the screen depending of OS 
-    """ 
-    if pl.system() =='Windows':
+     this function clear the screen depending on if OS is windows or other like linux
+    """
+    if pl.system() == 'Windows':
         os.system('cls')
     else:
         os.system('clear')
 
 
-def game2(words:list):
-    #initialize new game
+def detect_special_character(pass_string: str):
+    """uses regex to find special characters 
+    Args:
+        pass_string (string): string to analyze
 
-    lifes            = Life()
+    Returns:
+        bool: returns True or false
+    """
+    regex = re.compile('[@_!#$%^&*()<>?/\|}{~:]')
+    if regex.search(pass_string) is None:
+        res = False
+    else:
+        res = True
+    return res
 
-    while (lifes.get_lifes() > 0):
-        #get a random word
-        word                =  get_ramdom_word(words)
-        word_to_discover    = normalizeString(word)
-        word_map            = ['_ ' for x in word]
-        letters_left        = word
-        game_score          = Score()  
-        letters_used        = list()
 
-        #clean_screen()
-        print(gui.gui_in_game(game_score,lifes,''.join(word_map),letters_used))
+def game2(words: list):
+    # initialize new game
 
-        #game loop
-        while True:
-            #validate attemps
-            if game_score.get_attemps() > game_score.get_maximun_attemps():
-                input(gui.loose_screen(game_score.get_score(),word))
-                break
+    lives = Life()
+    level = Level()
+    game_score = Score()
+    scenes = gui.get_scenes()
 
-            #validate letterrs left
-            if len(letters_left) == 0:
+    while lives.get_lifes() > 0:
+        # get a random word
+        word =  get_random_word(words)
+        word_to_discover = normalize_string(word)
+        word_map = ['_ ' for x in word]
+        letters_left = list(word) 
+        letters_used = list()
+        game_score.set_attemps(0)
+        scene = scenes['hang']
+
+        clean_screen()
+        print(gui.gui_in_game(game_score, lives, ''.join(word_map), letters_used,level,scene[game_score.get_attemps()]))
+
+        # game loop
+        continue_game = True
+        while continue_game:
+            # validate attempts
+            if game_score.get_attemps() >= game_score.get_maximun_attemps():
                 clean_screen()
-                input(gui.win_screen(game_score.get_score(),word))
-                break
-            
+                scene = scenes['loose']
+                input(gui.gui_in_game(game_score, lives, ''.join(word_map), letters_used,level,scene))
+                lives.loose_life()
+                continue_game = False
+                continue
+
+            # validate letters left 
+            if len(letters_left) == 0 and game_score.get_attemps() <= game_score.get_maximun_attemps():
+                clean_screen()
+                scene = scenes['win']
+                input(gui.gui_in_game(game_score, lives, ''.join(word_map), letters_used,level,scene))
+                print("game_score.get_level(): ",level.get_level())
+                level.increase_level()
+                print("game_score.get_level(): ",level.get_level())
+                continue_game = False
+                continue
+
             clean_screen()
-            print(gui.gui_in_game(game_score,lifes,''.join(word_map),letters_used))
+            print(gui.gui_in_game(game_score, lives, ''.join(word_map), letters_used,level,scene[game_score.get_attemps()]))
             if game_score.get_attemps() < game_score.get_maximun_attemps():
                 letter = input(gui.scroll_text('Enter your gess > ')).upper()
-                letters_used.append(letter)
+                # validate input
+                try:
+                    assert len(letter) == 1, "Please enter just one letter "
+                    assert detect_special_character(letter) == False, 'No special characters allowed'
+                    letters_used.append(letter)
+                except AssertionError as er:
+                    print(er)
+                    sleep(1)
 
             if letter in letters_left:
-                aux_list = [x+' ' if x==letter else '_ ' for x in word_to_discover]
-                for i in range(0,len(aux_list)):
+                aux_list = [x + ' ' if x == letter else '_ ' for x in word_to_discover]
+                for i in range(0, len(aux_list)):
                     if aux_list[i] != '_ ':
                         word_map[i] = aux_list[i]
                         try:
                             letters_left.remove(aux_list[i].strip())
-                            game_score.increase_score(points())
-                        except:
-                            pass
+                            game_score.increase_score()
+                        except Exception as er:
+                            print(er)
             else:
                 game_score.increase_attemps()
 
-        lifes.decrease_life()
 
-
-def game(): 
-
-    word                =  list(get_ramdom_word(get_words()))
-    word_to_discover    = normalizeString(''.join(word))
-    word_map            = ['_ ' for x in list(word)] 
-    letters_left        = word.copy()
-    _ATTEMPS            = 9
-    attemps             = 0
-    win_points          = 0
-    letter              = str()
-    letters_used        = list()
-    lives               = life()
-    lives.set_lifes(3)
-    
-    clean_screen()
-    print(gui.gui_in_game(win_points,_ATTEMPS,attemps,''.join(word_map),letters_used,lives))        
-    while True:              
-
-        if attemps > _ATTEMPS:
-             
-            input(gui.loose_screen(win_points,''.join(word)))                
-            break  
-
-        if len(letters_left) == 0: 
-            clean_screen()
-            input(gui.win_screen(win_points,''.join(word)))                
-            break  
-        
-        clean_screen()
-        print(gui.gui_in_game(win_points,_ATTEMPS,attemps,''.join(word_map),letters_used,lives))
-        if attemps < _ATTEMPS: 
-            letter = input(gui.scroll_text('Enter your gess > ')).upper()   
-            letters_used.append(letter)
-
-        if letter in letters_left:  
-            aux_list = [x+' ' if x==letter else '_ ' for x in word_to_discover]
-            
-            for i in range(0,len(aux_list)):
-                if aux_list[i] != '_ ':
-                    word_map[i] = aux_list[i]
-                    try:
-                        letters_left.remove(aux_list[i].strip())
-                        win_points += points()
-                    except ValueError as a:
-                        pass           
-        else:
-            attemps += 1
-            
- 
-
-
-def points():
-    ramdom_points = random.randrange(10,50)
-    return ramdom_points
-
-def normalizeString(word:str) -> str:
+def normalize_string(word: str) -> str:
     """Remove commons accents characters
 
     Args:
@@ -175,19 +154,16 @@ def normalizeString(word:str) -> str:
     return word
 
 
-
-
-
 def start_game():
     _START_GAME = 1
-    _EXIT_GAME  = 2
+    _EXIT_GAME = 2
     words = get_words('data.txt')
-    
+
     while True:
-        #clean_screen()
-        option = input(gui.gui_game()) 
-        try: 
-            if option.isnumeric() :                 
+        clean_screen()
+        option = input(gui.gui_game())
+        try:
+            if option.isnumeric():
                 if int(option) == _EXIT_GAME:
                     break
                 elif int(option) == _START_GAME:
