@@ -4,6 +4,7 @@ import gui
 import re
 import platform as pl
 import os
+import unidecode
 
 from life import *
 from score import *
@@ -72,10 +73,11 @@ def game2(words: list):
 
     while lives.get_lifes() > 0:
         # get a random word
-        word =  get_random_word(words)
+        word_ori =  get_random_word(words)
+        word = word_ori
         word_to_discover = normalize_string(word)
         word_map = ['_ ' for x in word]
-        letters_left = list(word) 
+        letters_left = list(word_to_discover) 
         letters_used = list()
         game_score.set_attemps(0)
         scene = scenes['hang']
@@ -88,9 +90,14 @@ def game2(words: list):
         while continue_game:
             # validate attempts
             if game_score.get_attemps() >= game_score.get_maximun_attemps():
+                #show lose scene
+                clean_screen()
+                print(gui.gui_in_game(game_score, lives, ''.join(word_map), letters_used,level,scene[game_score.get_attemps()]))
+                sleep(3)
                 clean_screen()
                 scene = scenes['loose']
-                input(gui.gui_in_game(game_score, lives, ''.join(word_map), letters_used,level,scene))
+                word = '>>> '+space_letters(word_ori,' ')+'<<<'
+                input(gui.gui_in_game(game_score, lives, word , letters_used,level,scene))
                 lives.loose_life()
                 continue_game = False
                 continue
@@ -99,7 +106,8 @@ def game2(words: list):
             if len(letters_left) == 0 and game_score.get_attemps() <= game_score.get_maximun_attemps():
                 clean_screen()
                 scene = scenes['win']
-                input(gui.gui_in_game(game_score, lives, ''.join(word_map), letters_used,level,scene)) 
+                word = '>>> '+space_letters(word_ori,' ')+'<<<'
+                input(gui.gui_in_game(game_score, lives, ''.join(word), letters_used,level,scene)) 
                 level.increase_level() 
                 continue_game = False
                 continue
@@ -116,7 +124,7 @@ def game2(words: list):
                 except AssertionError as er:
                     print(er)
                     sleep(1)
-
+            
             if letter in letters_left:
                 aux_list = [x + ' ' if x == letter else '_ ' for x in word_to_discover]
                 for i in range(0, len(aux_list)):
@@ -130,6 +138,9 @@ def game2(words: list):
             else:
                 game_score.increase_attemps()
 
+def space_letters(word: str,separator) -> str:
+    """Add a separator between letters"""	
+    return ''.join([x+separator for x in list(word)])
 
 def normalize_string(word: str) -> str:
     """Remove commons accents characters
@@ -141,21 +152,15 @@ def normalize_string(word: str) -> str:
         str: string without accents
     """
 
-    word = re.sub(u"[àáâãäå]", 'a', word)
-    word = re.sub(u"[èéêë]", 'e', word)
-    word = re.sub(u"[ìíîï]", 'i', word)
-    word = re.sub(u"[òóôõö]", 'o', word)
-    word = re.sub(u"[ùúûü]", 'u', word)
-    word = re.sub(u"[ýÿ]", 'y', word)
-    word = re.sub(u"[ß]", 'ss', word)
-    word = re.sub(u"[ñ]", 'n', word)
-    return word
+    unaccented_string = unidecode.unidecode(word)
+    return unaccented_string
 
 
 def start_game():
     _START_GAME = 1
     _EXIT_GAME = 2
     words = get_words('data.txt')
+    input(gui.configure_gui())
 
     while True:
         clean_screen()

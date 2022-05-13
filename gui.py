@@ -350,7 +350,7 @@ def gui_in_game(score:Score,lifes:life,word_map:str,letters_used:list,level:Leve
     attemps_left  = (score.get_maximun_attemps() - score.get_attemps())    
     return  f"""
     ╔═══════════════════════════════════════════════════════╗
-    ║{'LEVEL: '+str(level.get_level())+' ║ '+('  '+lifes.get_life_art())*lifes.get_lifes(): ^58}║
+    ║{'LEVEL: '+str(level.get_level()):^26}║{(lifes.get_life_art())*lifes.get_lifes(): ^28}║
     ║═══════════════════════════════════════════════════════║
     ║    ATTEMPS LEFT: {attemps_left:2d}      ║ SCORE:{score.get_score_art()} {score.get_score():3}               ║
     ║═══════════════════════════════════════════════════════║
@@ -363,6 +363,49 @@ def gui_in_game(score:Score,lifes:life,word_map:str,letters_used:list,level:Leve
     ╚═══════════════════════════════════════════════════════╝
     """ 
  
+
+def configure_gui() -> str:
+    """Configure the gui"""
+
+    return """
+    ╔════════════════════════════════════════════════════════    
+    ║
+    ║            ^
+    ║            ║
+    ║            ║
+    ║     <══════╝ 
+    ║
+    ║
+    ║
+    ║            █░░█ █▀▀█ █▀▀▄ █▀▀▀ █▀▄▀█ █▀▀█ █▀▀▄        
+    ║            █▀▀█ █▄▄█ █░░█ █░▀█ █░▀░█ █▄▄█ █░░█        
+    ║            ▀░░▀ ▀░░▀ ▀░░▀ ▀▀▀▀ ▀░░░▀ ▀░░▀ ▀░░▀        
+    ║
+    ║               Before star the game please 
+    ║                    configure the screen
+    ║
+    ║            make sure you can see all the bordes 
+    ║               
+    ║
+    ║
+    ║
+    ║
+    ║
+    ║                  PRESS ENTER TO CONTINUE
+    ║
+    ║
+    ║
+    ║
+    ║
+    ║
+    ║
+    ║
+    ║
+    ║
+    ║
+    ║
+    ║
+    """
 
 
 
