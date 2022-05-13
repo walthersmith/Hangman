@@ -1,4 +1,4 @@
-# Hangman (Work in Progress)
+# Hangman 
 
  ![image](menu.png)
 
@@ -15,7 +15,11 @@ into the project directory, just run this command
 ```
 $ python main.py
 ```
+## Game
 ![image](game.png)
+## WIN 
 ![image](win.png)
+## GAME OVER 
 ![image](loose.png)
+![image](loose2.png)
  
