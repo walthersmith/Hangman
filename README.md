@@ -2,7 +2,7 @@
 
  ![image](menu.png)
 
-This Hangman Game is create  for  the last  challenge  in a python course  called  
+This Hangman Game is the last  challenge  for a python course  called  
 "Curso de Python Intermedio: Comprehensions, Lambdas y Manejo de Errores" in [PLATZI](https://platzi.com/cursos/python-intermedio/)
 
 
